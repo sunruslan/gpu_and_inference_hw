@@ -124,12 +124,44 @@ def compute_elementwise_metrics(num_elements, num_ops, bytes_per_element, ms, va
 # Why does performance rise as arithmetic intensity increases even though the
 # measured runtime changes only a little?
 #
+# A1. On our L40S run, compiled latency stayed ~0.82–0.83 ms from 1 through 64 ops
+# while achieved throughput rose from ~0.16 to ~10.4 TFLOP/s. torch.compile fuses the
+# loop so traffic at the kernel boundary is still one read and one write of the 64M
+# float32 vector (~256 MB) regardless of num_ops; only the FLOP count grows (2K per
+# element). Arithmetic intensity therefore rises with K, but bytes moved do not. We
+# are still on the memory-bandwidth (left) side of the roofline (ridge ≈106 FLOP/Byte;
+# AI at 64 ops is only 16), so time is set mainly by bytes/BW while reported FLOP/s
+# increases as AI increases (achievable FLOP/s ≈ BW × AI on that slope).
+#
 # Q2. In one sample run, `matmul 1024x1024` achieved lower FLOP/s than the
 # `128 ops` compiled element-wise operation. Give one or two reasons why that can
 # happen on a large GPU like an H100.
+#
+# A2. Our run was close (matmul 1024 ≈22.6 TFLOP/s vs 128-op compiled ≈20.9 TFLOP/s),
+# but a small GEMM can still underperform a large fused elementwise kernel because:
+# (1) a 1024³ problem is too small to fill all SMs/warps on a big GPU, so compute
+# units sit idle; (2) cuBLAS/launch and workspace overhead matter more relative to
+# useful work, whereas the compiled elementwise kernel sustains a long, regular
+# memory-bound sweep over 256 MB. A huge H100 is built for large tiles; tiny matmuls
+# do not always win on FLOP/s even when their nominal AI is higher.
 #
 # Q3. Between `64 ops` and `128 ops`, runtime increases more noticeably than it
 # did for smaller operations. What does that suggest about what resource is
 # becoming the bottleneck?
 #
+# A3. For compiled ops on our L40S trace, ms was still ~flat from 64 to 128 ops
+# (~0.823 vs ~0.822 ms) while TFLOP/s doubled again (~10.4 → ~20.9), so we were
+# still memory-bound (AI 32 ≪ ridge 106). In general, when extra ops finally make
+# latency climb after staying flat at low K, the kernel is moving toward the compute
+# ceiling: FLOPs are no longer “free” on top of fixed HBM traffic and FP32 throughput
+# starts to limit step time. (The eager series shows the opposite pattern—ms grows
+# roughly linearly with K because each step re-reads/writes the growing sequence.)
+#
 # Q4. Why do the eager `ops-K` points look so different from the compiled ones?
+#
+# A4. Eager PyTorch runs separate mul/add kernels each loop iteration, materializes
+# intermediates, and (in our model) keeps ~0.08 FLOP/Byte and ~0.05 TFLOP/s while
+# latency grows from ~2.9 ms (1 op) to ~164 ms (64 ops). Compiled code fuses the loop
+# into one kernel with one read/write per element, so AI scales with K (0.25–32 in
+# our run), latency stays ~0.82 ms, and points move right/up on the roofline. Same math,
+# different bytes and launch pattern.

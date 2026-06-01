@@ -274,10 +274,18 @@ if __name__ == "__main__":
 # Writeup
 # ============================================================================
 #
-# Changes made and speedup per fix:
-#   V1 (+KV cache): ...
-#   V2 (+no .item()): ...
-#   V3 (+torch.compile, bf16): ...
+# Changes made and speedup per fix (L40S, 128 tokens, prompt len 1024):
+#   Slow baseline: 0.62 s (206 tok/s)
+#   V0 (same loop): 0.62 s — 1.00× vs slow (sanity check)
+#   V1 (+KV cache): 0.37 s — 1.67× vs slow, 1.68× vs V0
+#   V2 (+no .item()): 0.18 s — 3.55× vs slow, 2.12× vs V1
+#   V3 (+torch.compile, bf16): 0.06 s — 9.61× vs slow, 2.71× vs V2
 #
 # Biggest impact and why:
+#   V1 (KV cache) removed the largest redundant cost: the slow loop re-ran attention
+#   over the full growing sequence every token (~O(steps × seq_len) work). Prefill
+#   once and decode with past_key_values cut time from 0.62 s to 0.37 s. V2 removed
+#   per-step GPU→CPU .item() syncs and torch.cat growth. V3 added bf16 and
+#   torch.compile (no CUDA graphs with KV cache) for another ~2.7× on top of V2.
+#   Overall: 9.61× vs the utils slow_loop baseline.
 #
