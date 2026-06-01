@@ -109,22 +109,19 @@ def profile(loop_fn, model, input_ids, trace_name: str):
 def _compile_for_generation(model):
     """torch.compile for decode loops with KV cache.
 
-    `mode='reduce-overhead'` enables CUDA graph trees that reuse static tensor
-    addresses; HuggingFace past_key_values are updated in-place each step, which
-    triggers 'CUDAGraph output overwritten' errors. Compile without CUDA graphs.
+    Avoid CUDA graph capture: HuggingFace past_key_values are updated in-place
+    each step, which conflicts with reduce-overhead / cudagraph_trees replay.
     """
     import torch._inductor.config as inductor_config
 
     inductor_config.triton.cudagraph_trees = False
-    try:
-        return torch.compile(
-            model,
-            mode="reduce-overhead",
-            fullgraph=False,
-            options={"triton.cudagraphs": False},
-        )
-    except TypeError:
-        return torch.compile(model, mode="reduce-overhead", fullgraph=False)
+    # PyTorch 2.9+: cannot pass mode and options together; use a no-cudagraphs mode.
+    for mode in ("max-autotune-no-cudagraphs", "default"):
+        try:
+            return torch.compile(model, mode=mode, fullgraph=False)
+        except RuntimeError:
+            continue
+    return torch.compile(model, fullgraph=False)
 
 
 def _warmup_loop(loop_fn, model, input_ids, n_steps=2):
