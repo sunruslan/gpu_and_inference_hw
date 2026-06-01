@@ -7,32 +7,32 @@ Model: Tiny random Llama (2 layers, d_model=2048)
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
                                                    Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
-                                           aten::matmul         0.44%       1.038ms        35.17%      83.527ms     435.036us       0.000us         0.00%      36.252ms     188.810us           0 B           0 B       2.28 GB           0 B           192  
-                                           aten::linear         0.18%     420.069us         5.37%      12.753ms      70.848us       0.000us         0.00%      36.226ms     201.258us           0 B           0 B       2.26 GB           0 B           180  
-                                               aten::mm         2.07%       4.925ms         3.94%       9.363ms      52.019us      35.705ms        73.37%      36.226ms     201.258us           0 B           0 B       2.26 GB       2.26 GB           180  
-void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      18.604ms        38.23%      18.604ms     277.666us           0 B           0 B           0 B           0 B            67  
-void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      10.492ms        21.56%      10.492ms     117.884us           0 B           0 B           0 B           0 B            89  
-                     aten::scaled_dot_product_attention         0.08%     194.430us         0.90%       2.130ms      88.752us       0.000us         0.00%       6.853ms     285.554us         384 B           0 B     193.80 MB           0 B            24  
-          aten::_scaled_dot_product_efficient_attention         0.11%     249.748us         0.82%       1.936ms      80.651us       0.000us         0.00%       6.853ms     285.554us         384 B           0 B     193.80 MB           0 B            24  
-                     aten::_efficient_attention_forward         0.12%     286.914us         0.63%       1.493ms      62.216us       6.099ms        12.53%       6.853ms     285.554us         384 B           8 B     193.80 MB           0 B            24  
-void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us       6.609ms        13.58%       6.609ms     275.389us           0 B           0 B           0 B           0 B            24  
-fmha_cutlassF_f32_aligned_32x128_gmem_sm80(PyTorchMe...         0.00%       0.000us         0.00%       0.000us       0.000us       6.099ms        12.53%       6.099ms     254.142us           0 B           0 B           0 B           0 B            24  
+                                           aten::matmul         0.47%     939.759us        31.73%      63.056ms     328.415us       0.000us         0.00%      36.366ms     189.406us           0 B           0 B       2.28 GB           0 B           192  
+                                           aten::linear         0.20%     400.309us         5.95%      11.828ms      65.714us       0.000us         0.00%      36.341ms     201.892us           0 B           0 B       2.26 GB           0 B           180  
+                                               aten::mm         2.27%       4.511ms         4.37%       8.692ms      48.290us      35.817ms        73.50%      36.341ms     201.892us           0 B           0 B       2.26 GB       2.26 GB           180  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      18.693ms        38.36%      18.693ms     278.997us           0 B           0 B           0 B           0 B            67  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      10.501ms        21.55%      10.501ms     117.984us           0 B           0 B           0 B           0 B            89  
+                     aten::scaled_dot_product_attention         0.09%     186.004us         1.05%       2.083ms      86.776us       0.000us         0.00%       6.813ms     283.879us         384 B           0 B     193.80 MB           0 B            24  
+          aten::_scaled_dot_product_efficient_attention         0.13%     263.045us         0.95%       1.897ms      79.025us       0.000us         0.00%       6.813ms     283.879us         384 B           0 B     193.80 MB           0 B            24  
+                     aten::_efficient_attention_forward         0.14%     269.720us         0.73%       1.441ms      60.061us       6.057ms        12.43%       6.813ms     283.879us         384 B          24 B     193.80 MB           0 B            24  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us       6.623ms        13.59%       6.623ms     275.975us           0 B           0 B           0 B           0 B            24  
+fmha_cutlassF_f32_aligned_32x128_gmem_sm80(PyTorchMe...         0.00%       0.000us         0.00%       0.000us       0.000us       6.057ms        12.43%       6.057ms     252.367us           0 B           0 B           0 B           0 B            24  
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
-Self CPU time total: 237.471ms
-Self CUDA time total: 48.661ms
+Self CPU time total: 198.725ms
+Self CUDA time total: 48.728ms
 
 Chrome trace saved to /gpu_and_inference_hw/hw2/results/v0_slow_trace.json
-Slow: 128 tokens in 0.64s (201.2 tok/s)
+Slow: 128 tokens in 0.62s (206.8 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
 
 --- Part 2: Progressive versions (timing only) ---
-V0: 128 tokens in 0.63s (204.1 tok/s)
+V0: 128 tokens in 0.64s (201.0 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
-V1 (+KV cache): 128 tokens in 0.37s (348.0 tok/s)
+V1 (+KV cache): 128 tokens in 0.29s (440.0 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
-V2 (+no .item()): 128 tokens in 1.09s (117.0 tok/s)
+V2 (+no .item()): 128 tokens in 0.16s (792.4 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
-V3 (+bf16): 128 tokens in 0.29s (445.8 tok/s)
+V3 (+bf16): 128 tokens in 0.28s (460.3 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
 
 --- Part 3: V4 (+compile) timing and Chrome trace ---
