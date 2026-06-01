@@ -1,0 +1,38 @@
+============================================================
+HW2: LLM Inference Optimization
+Model: Tiny random Llama (2 layers, d_model=2048)
+============================================================
+
+--- Part 1: Slow baseline ---
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                           aten::matmul         0.44%       1.038ms        35.17%      83.527ms     435.036us       0.000us         0.00%      36.252ms     188.810us           0 B           0 B       2.28 GB           0 B           192  
+                                           aten::linear         0.18%     420.069us         5.37%      12.753ms      70.848us       0.000us         0.00%      36.226ms     201.258us           0 B           0 B       2.26 GB           0 B           180  
+                                               aten::mm         2.07%       4.925ms         3.94%       9.363ms      52.019us      35.705ms        73.37%      36.226ms     201.258us           0 B           0 B       2.26 GB       2.26 GB           180  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      18.604ms        38.23%      18.604ms     277.666us           0 B           0 B           0 B           0 B            67  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      10.492ms        21.56%      10.492ms     117.884us           0 B           0 B           0 B           0 B            89  
+                     aten::scaled_dot_product_attention         0.08%     194.430us         0.90%       2.130ms      88.752us       0.000us         0.00%       6.853ms     285.554us         384 B           0 B     193.80 MB           0 B            24  
+          aten::_scaled_dot_product_efficient_attention         0.11%     249.748us         0.82%       1.936ms      80.651us       0.000us         0.00%       6.853ms     285.554us         384 B           0 B     193.80 MB           0 B            24  
+                     aten::_efficient_attention_forward         0.12%     286.914us         0.63%       1.493ms      62.216us       6.099ms        12.53%       6.853ms     285.554us         384 B           8 B     193.80 MB           0 B            24  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us       6.609ms        13.58%       6.609ms     275.389us           0 B           0 B           0 B           0 B            24  
+fmha_cutlassF_f32_aligned_32x128_gmem_sm80(PyTorchMe...         0.00%       0.000us         0.00%       0.000us       0.000us       6.099ms        12.53%       6.099ms     254.142us           0 B           0 B           0 B           0 B            24  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 237.471ms
+Self CUDA time total: 48.661ms
+
+Chrome trace saved to /gpu_and_inference_hw/hw2/results/v0_slow_trace.json
+Slow: 128 tokens in 0.64s (201.2 tok/s)
+Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
+
+--- Part 2: Progressive versions (timing only) ---
+V0: 128 tokens in 0.63s (204.1 tok/s)
+Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
+V1 (+KV cache): 128 tokens in 0.37s (348.0 tok/s)
+Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
+V2 (+no .item()): 128 tokens in 1.09s (117.0 tok/s)
+Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
+V3 (+bf16): 128 tokens in 0.29s (445.8 tok/s)
+Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
+
+--- Part 3: V4 (+compile) timing and Chrome trace ---
