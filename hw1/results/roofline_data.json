@@ -5,9 +5,9 @@
     "variant": "baseline",
     "num_ops": 0,
     "arithmetic_intensity": 0.01,
-    "achieved_flops": 6440513555.59108,
-    "achieved_bw": 644051355559.1079,
-    "ms": 0.8335840106010437
+    "achieved_flops": 6443853156.327906,
+    "achieved_bw": 644385315632.7905,
+    "ms": 0.8331519961357117
   },
   {
     "name": "1 ops",
@@ -15,9 +15,9 @@
     "variant": "eager",
     "num_ops": 1,
     "arithmetic_intensity": 0.07142857142857142,
-    "achieved_flops": 46273549025.43492,
-    "achieved_bw": 647829686356.089,
-    "ms": 2.900528073310852
+    "achieved_flops": 46296279140.007744,
+    "achieved_bw": 648147907960.1084,
+    "ms": 2.8991039991378784
   },
   {
     "name": "1 ops",
@@ -25,9 +25,9 @@
     "variant": "compiled",
     "num_ops": 1,
     "arithmetic_intensity": 0.25,
-    "achieved_flops": 157532544953.6027,
-    "achieved_bw": 630130179814.4108,
-    "ms": 0.8519999980926514
+    "achieved_flops": 162513230267.9255,
+    "achieved_bw": 650052921071.702,
+    "ms": 0.8258880078792572
   },
   {
     "name": "2 ops",
@@ -35,9 +35,9 @@
     "variant": "eager",
     "num_ops": 2,
     "arithmetic_intensity": 0.07692307692307693,
-    "achieved_flops": 48969988551.165596,
-    "achieved_bw": 636609851165.1527,
-    "ms": 5.4816319942474365
+    "achieved_flops": 49013193419.53851,
+    "achieved_bw": 637171514454.0006,
+    "ms": 5.476799964904785
   },
   {
     "name": "2 ops",
@@ -45,9 +45,9 @@
     "variant": "compiled",
     "num_ops": 2,
     "arithmetic_intensity": 0.5,
-    "achieved_flops": 326030734195.8131,
-    "achieved_bw": 652061468391.6262,
-    "ms": 0.8233440220355988
+    "achieved_flops": 326018071966.6708,
+    "achieved_bw": 652036143933.3416,
+    "ms": 0.8233759999275208
   },
   {
     "name": "4 ops",
@@ -55,9 +55,9 @@
     "variant": "eager",
     "num_ops": 4,
     "arithmetic_intensity": 0.08,
-    "achieved_flops": 50542766094.29111,
-    "achieved_bw": 631784576178.6388,
-    "ms": 10.622111797332764
+    "achieved_flops": 50593520453.85003,
+    "achieved_bw": 632419005673.1254,
+    "ms": 10.611455917358398
   },
   {
     "name": "4 ops",
@@ -65,9 +65,9 @@
     "variant": "compiled",
     "num_ops": 4,
     "arithmetic_intensity": 1.0,
-    "achieved_flops": 649524412891.1621,
-    "achieved_bw": 649524412891.1621,
-    "ms": 0.8265600204467773
+    "achieved_flops": 651896788409.347,
+    "achieved_bw": 651896788409.347,
+    "ms": 0.8235520124435425
   },
   {
     "name": "8 ops",
@@ -75,9 +75,9 @@
     "variant": "eager",
     "num_ops": 8,
     "arithmetic_intensity": 0.08163265306122448,
-    "achieved_flops": 51407438287.674385,
-    "achieved_bw": 629741119024.0112,
-    "ms": 20.88689613342285
+    "achieved_flops": 51433956667.31615,
+    "achieved_bw": 630065969174.6228,
+    "ms": 20.876127243041992
   },
   {
     "name": "8 ops",
@@ -85,9 +85,9 @@
     "variant": "compiled",
     "num_ops": 8,
     "arithmetic_intensity": 2.0,
-    "achieved_flops": 1298797446404.845,
-    "achieved_bw": 649398723202.4225,
-    "ms": 0.8267199993133545
+    "achieved_flops": 1303261874203.212,
+    "achieved_bw": 651630937101.606,
+    "ms": 0.8238880038261414
   },
   {
     "name": "16 ops",
@@ -95,9 +95,9 @@
     "variant": "eager",
     "num_ops": 16,
     "arithmetic_intensity": 0.08247422680412371,
-    "achieved_flops": 51841430263.8141,
-    "achieved_bw": 628577341948.746,
-    "ms": 41.424081802368164
+    "achieved_flops": 51883136202.557976,
+    "achieved_bw": 629083026456.0155,
+    "ms": 41.39078330993652
   },
   {
     "name": "16 ops",
@@ -105,9 +105,9 @@
     "variant": "compiled",
     "num_ops": 16,
     "arithmetic_intensity": 4.0,
-    "achieved_flops": 2586731321000.057,
-    "achieved_bw": 646682830250.0143,
-    "ms": 0.8301919996738434
+    "achieved_flops": 2609463006582.285,
+    "achieved_bw": 652365751645.5713,
+    "ms": 0.8229599893093109
   },
   {
     "name": "32 ops",
@@ -115,9 +115,9 @@
     "variant": "eager",
     "num_ops": 32,
     "arithmetic_intensity": 0.08290155440414508,
-    "achieved_flops": 52084875864.72161,
-    "achieved_bw": 628273815118.2045,
-    "ms": 82.46092987060547
+    "achieved_flops": 52106331488.69888,
+    "achieved_bw": 628532623582.4303,
+    "ms": 82.42697525024414
   },
   {
     "name": "32 ops",
@@ -125,9 +125,9 @@
     "variant": "compiled",
     "num_ops": 32,
     "arithmetic_intensity": 8.0,
-    "achieved_flops": 5216491747133.01,
-    "achieved_bw": 652061468391.6262,
-    "ms": 0.8233440220355988
+    "achieved_flops": 5223190976663.708,
+    "achieved_bw": 652898872082.9635,
+    "ms": 0.8222880065441132
   },
   {
     "name": "64 ops",
@@ -135,9 +135,9 @@
     "variant": "eager",
     "num_ops": 64,
     "arithmetic_intensity": 0.08311688311688312,
-    "achieved_flops": 52211911599.44469,
-    "achieved_bw": 628174561430.8188,
-    "ms": 164.52059173583984
+    "achieved_flops": 52238607402.89768,
+    "achieved_bw": 628495745316.1128,
+    "ms": 164.43651580810547
   },
   {
     "name": "64 ops",
@@ -145,9 +145,9 @@
     "variant": "compiled",
     "num_ops": 64,
     "arithmetic_intensity": 16.0,
-    "achieved_flops": 10421642485003.719,
-    "achieved_bw": 651352655312.7324,
-    "ms": 0.8242399990558624
+    "achieved_flops": 10436837594600.55,
+    "achieved_bw": 652302349662.5344,
+    "ms": 0.8230399787425995
   },
   {
     "name": "128 ops",
@@ -155,9 +155,9 @@
     "variant": "eager",
     "num_ops": 128,
     "arithmetic_intensity": 0.08322496749024708,
-    "achieved_flops": 52279173261.97152,
-    "achieved_bw": 628166941225.8765,
-    "ms": 328.6178436279297
+    "achieved_flops": 52298675715.23283,
+    "achieved_bw": 628401275390.8444,
+    "ms": 328.49530029296875
   },
   {
     "name": "128 ops",
@@ -165,9 +165,9 @@
     "variant": "compiled",
     "num_ops": 128,
     "arithmetic_intensity": 32.0,
-    "achieved_flops": 20890325185881.234,
-    "achieved_bw": 652822662058.7886,
-    "ms": 0.8223839998245239
+    "achieved_flops": 20907408955125.02,
+    "achieved_bw": 653356529847.6569,
+    "ms": 0.8217120170593262
   },
   {
     "name": "n=1024",
@@ -175,9 +175,9 @@
     "variant": "library",
     "num_ops": -1,
     "arithmetic_intensity": 170.66666666666666,
-    "achieved_flops": 22741059504264.938,
-    "achieved_bw": 133248395532.80237,
-    "ms": 0.09443199634552002
+    "achieved_flops": 22553810239681.887,
+    "achieved_bw": 132151231873.13606,
+    "ms": 0.09521600231528282
   },
   {
     "name": "n=2048",
@@ -185,9 +185,9 @@
     "variant": "library",
     "num_ops": -1,
     "arithmetic_intensity": 341.3333333333333,
-    "achieved_flops": 41190034484331.29,
-    "achieved_bw": 120673929153.31432,
-    "ms": 0.41708800196647644
+    "achieved_flops": 44720607681826.35,
+    "achieved_bw": 131017405317.85065,
+    "ms": 0.38416001200675964
   },
   {
     "name": "n=4096",
@@ -195,8 +195,8 @@
     "variant": "library",
     "num_ops": -1,
     "arithmetic_intensity": 682.6666666666666,
-    "achieved_flops": 39021034839486.95,
-    "achieved_bw": 57159719003.154724,
-    "ms": 3.5221760272979736
+    "achieved_flops": 39054210786397.945,
+    "achieved_bw": 57208316581.63761,
+    "ms": 3.5191839933395386
   }
 ]

@@ -7,52 +7,52 @@ Model: Tiny random Llama (2 layers, d_model=2048)
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
                                                    Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
-                                           aten::matmul         0.47%       1.022ms        32.02%      70.190ms     365.575us       0.000us         0.00%      36.734ms     191.323us           0 B           0 B       2.28 GB           0 B           192  
-                                           aten::linear         0.19%     411.166us         7.30%      15.994ms      88.855us       0.000us         0.00%      36.708ms     203.935us           0 B           0 B       2.26 GB           0 B           180  
-                                               aten::mm         2.13%       4.661ms         5.83%      12.779ms      70.992us      36.173ms        73.51%      36.708ms     203.935us           0 B           0 B       2.26 GB       2.26 GB           180  
-void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      18.834ms        38.27%      18.834ms     281.098us           0 B           0 B           0 B           0 B            67  
-void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      10.640ms        21.62%      10.640ms     119.551us           0 B           0 B           0 B           0 B            89  
-                     aten::scaled_dot_product_attention         0.08%     182.654us         0.95%       2.093ms      87.190us       0.000us         0.00%       6.891ms     287.134us         384 B           0 B     193.80 MB           0 B            24  
-          aten::_scaled_dot_product_efficient_attention         0.11%     241.163us         0.87%       1.910ms      79.580us       0.000us         0.00%       6.891ms     287.134us         384 B           0 B     193.80 MB           0 B            24  
-                     aten::_efficient_attention_forward         0.12%     267.099us         0.67%       1.467ms      61.106us       6.130ms        12.46%       6.891ms     287.134us         384 B           8 B     193.80 MB           0 B            24  
-void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us       6.699ms        13.61%       6.699ms     279.139us           0 B           0 B           0 B           0 B            24  
-fmha_cutlassF_f32_aligned_32x128_gmem_sm80(PyTorchMe...         0.00%       0.000us         0.00%       0.000us       0.000us       6.130ms        12.46%       6.130ms     255.430us           0 B           0 B           0 B           0 B            24  
+                                           aten::matmul         0.47%       1.190ms        33.87%      85.723ms     446.476us       0.000us         0.00%      36.448ms     189.833us           0 B           0 B       2.28 GB           0 B           192  
+                                           aten::linear         0.17%     435.407us        11.60%      29.375ms     163.194us       0.000us         0.00%      36.422ms     202.347us           0 B           0 B       2.26 GB           0 B           180  
+                                               aten::mm         1.92%       4.851ms        10.34%      26.167ms     145.372us      35.902ms        73.50%      36.422ms     202.347us           0 B           0 B       2.26 GB       2.26 GB           180  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      18.679ms        38.24%      18.679ms     278.796us           0 B           0 B           0 B           0 B            67  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us      10.549ms        21.60%      10.549ms     118.527us           0 B           0 B           0 B           0 B            89  
+                     aten::scaled_dot_product_attention         0.08%     212.508us         0.86%       2.168ms      90.315us       0.000us         0.00%       6.837ms     284.892us         384 B           0 B     193.80 MB           0 B            24  
+          aten::_scaled_dot_product_efficient_attention         0.11%     269.822us         0.77%       1.955ms      81.460us       0.000us         0.00%       6.837ms     284.892us         384 B           0 B     193.80 MB           0 B            24  
+                     aten::_efficient_attention_forward         0.11%     276.949us         0.59%       1.495ms      62.307us       6.082ms        12.45%       6.837ms     284.892us         384 B          32 B     193.80 MB           0 B            24  
+void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_...         0.00%       0.000us         0.00%       0.000us       0.000us       6.674ms        13.66%       6.674ms     278.085us           0 B           0 B           0 B           0 B            24  
+fmha_cutlassF_f32_aligned_32x128_gmem_sm80(PyTorchMe...         0.00%       0.000us         0.00%       0.000us       0.000us       6.082ms        12.45%       6.082ms     253.404us           0 B           0 B           0 B           0 B            24  
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
-Self CPU time total: 219.208ms
-Self CUDA time total: 49.210ms
+Self CPU time total: 253.126ms
+Self CUDA time total: 48.847ms
 
 Chrome trace saved to /gpu_and_inference_hw/hw2/results/v0_slow_trace.json
-Slow: 128 tokens in 0.64s (201.2 tok/s)
+Slow: 128 tokens in 0.62s (206.0 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
 
 --- Part 2: Progressive versions (timing only) ---
-V0: 128 tokens in 0.62s (206.9 tok/s)
+V0: 128 tokens in 0.62s (205.1 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
-V1 (+KV cache): 128 tokens in 0.35s (363.7 tok/s)
+V1 (+KV cache): 128 tokens in 0.37s (344.9 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
-V2 (+no .item()): 128 tokens in 0.16s (788.7 tok/s)
+V2 (+no .item()): 128 tokens in 0.18s (731.1 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
 
 --- Part 3: V3 (+compile) timing and Chrome trace ---
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
                                                    Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
-## Call CompiledFxGraph fawagse7x3ecqxy3vdsii5v2c3s2...         0.00%       0.000us         0.00%       0.000us       0.000us        4.311s       137.40%        4.311s     431.147ms           0 B           0 B           0 B           0 B            10  
-       InductorBenchmarker.benchmark_gpu (dynamo_timed)         0.00%       0.000us         0.00%       0.000us       0.000us        3.214s       102.43%        3.214s      31.510ms           0 B           0 B           0 B           0 B           102  
-                             Torch-Compiled Region: 0/2         0.07%       4.317ms        72.20%        4.755s     475.491ms       0.000us         0.00%        3.136s     313.642ms           0 B           0 B     240.00 KB    -160.86 MB            10  
-## Call CompiledFxGraph fawagse7x3ecqxy3vdsii5v2c3s2...         0.17%      11.061ms        72.13%        4.750s     475.012ms       0.000us         0.00%        3.136s     313.642ms           0 B        -320 B     161.09 MB     161.02 MB            10  
-       InductorBenchmarker.benchmark_gpu (dynamo_timed)         9.66%     636.004ms        49.92%        3.288s      32.231ms       0.000us         0.00%        3.132s      30.703ms           0 B           0 B           0 B      -9.56 GB           102  
-CachingAutotuner.coordinate_descent_tuning (dynamo_t...        21.60%        1.423s        68.69%        4.524s     301.589ms       0.000us         0.00%        2.933s     195.542ms           0 B           0 B           0 B           0 B            15  
-                                            aten::zero_         0.49%      32.283ms         2.14%     140.896ms       6.705us       0.000us         0.00%        2.759s     131.306us           0 B           0 B           0 B           0 B         21012  
-                                            aten::fill_         0.66%      43.779ms         1.65%     108.613ms       5.169us        2.759s        87.92%        2.759s     131.306us           0 B           0 B           0 B           0 B         21012  
-void at::native::vectorized_elementwise_kernel<4, at...         0.00%       0.000us         0.00%       0.000us       0.000us        2.759s        87.92%        2.759s     131.293us           0 B           0 B           0 B           0 B         21012  
-CachingAutotuner.benchmark_all_configs (dynamo_timed...         0.05%       3.424ms         3.20%     210.908ms      70.303ms       0.000us         0.00%     198.624ms      66.208ms           0 B           0 B           0 B           0 B             3  
+## Call CompiledFxGraph fawagse7x3ecqxy3vdsii5v2c3s2...         0.00%       0.000us         0.00%       0.000us       0.000us        3.302s       124.16%        3.302s     330.241ms           0 B           0 B           0 B           0 B            10  
+       InductorBenchmarker.benchmark_gpu (dynamo_timed)         0.00%       0.000us         0.00%       0.000us       0.000us        2.723s       102.36%        2.723s      32.030ms           0 B           0 B           0 B           0 B            85  
+                             Torch-Compiled Region: 0/2         0.08%       4.421ms        65.88%        3.502s     350.230ms       0.000us         0.00%        2.658s     265.817ms           0 B           0 B     240.00 KB    -160.86 MB            10  
+## Call CompiledFxGraph fawagse7x3ecqxy3vdsii5v2c3s2...         0.22%      11.674ms        65.79%        3.497s     349.742ms       0.000us         0.00%        2.658s     265.817ms           0 B        -320 B     161.09 MB     161.02 MB            10  
+       InductorBenchmarker.benchmark_gpu (dynamo_timed)        10.48%     557.167ms        52.42%        2.787s      32.788ms       0.000us         0.00%        2.654s      31.218ms           0 B           0 B           0 B      -7.97 GB            85  
+CachingAutotuner.coordinate_descent_tuning (dynamo_t...        12.71%     675.838ms        61.48%        3.269s     272.392ms       0.000us         0.00%        2.455s     204.575ms           0 B           0 B           0 B           0 B            12  
+                                            aten::zero_         0.52%      27.889ms         2.33%     124.124ms       7.089us       0.000us         0.00%        2.280s     130.202us           0 B           0 B           0 B           0 B         17510  
+                                            aten::fill_         0.71%      37.716ms         1.81%      96.235ms       5.496us        2.279s        85.70%        2.280s     130.202us           0 B           0 B           0 B           0 B         17510  
+void at::native::vectorized_elementwise_kernel<4, at...         0.00%       0.000us         0.00%       0.000us       0.000us        2.279s        85.70%        2.279s     130.180us           0 B           0 B           0 B           0 B         17510  
+CachingAutotuner.benchmark_all_configs (dynamo_timed...         0.07%       3.913ms         3.99%     212.148ms      70.716ms       0.000us         0.00%     198.617ms      66.206ms           0 B           0 B           0 B           0 B             3  
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
-Self CPU time total: 6.586s
-Self CUDA time total: 3.138s
+Self CPU time total: 5.316s
+Self CUDA time total: 2.660s
 
 Chrome trace saved to /gpu_and_inference_hw/hw2/results/v3_trace.json
-V3 (+compile): 128 tokens in 0.06s (2055.7 tok/s)
+V3 (+compile): 128 tokens in 0.06s (1980.6 tok/s)
 Token preview: [775, 1973, 97, 2453, 295, 695, 775, 866]
 
 ============================================================
@@ -60,17 +60,17 @@ PROGRESSIVE OPTIMIZATIONS
 ============================================================
 Version                        Time (s)    vs Slow    vs Prev
 ------------------------------------------------------------
-Slow (utils baseline)              0.64      1.00x          -
-V0 (same loop as slow)             0.62      1.03x      1.03x
-V1 (+KV cache)                     0.35      1.81x      1.76x
-V2 (+no .item())                   0.16      3.92x      2.17x
-V3 (+torch.compile)                0.06     10.22x      2.61x
+Slow (utils baseline)              0.62      1.00x          -
+V0 (same loop as slow)             0.62      1.00x      1.00x
+V1 (+KV cache)                     0.37      1.67x      1.68x
+V2 (+no .item())                   0.18      3.55x      2.12x
+V3 (+torch.compile)                0.06      9.61x      2.71x
 ------------------------------------------------------------
-  Total speedup (Slow → V3): 10.22x
+  Total speedup (Slow → V3): 9.61x
 
 ============================================================
 SUMMARY (grading)
 ============================================================
-  Slow:        0.64s
+  Slow:        0.62s
   Optimized:   0.06s
-  Speedup:    10.22x  (vs slow baseline)
+  Speedup:     9.61x  (vs slow baseline)
