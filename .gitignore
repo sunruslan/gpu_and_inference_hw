@@ -1,3 +1,5 @@
 .venv/
 __pycache__/
 *.py[cod]
+hw2/results
+!hw2/results/output.txt
