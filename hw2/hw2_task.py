@@ -128,60 +128,51 @@ def _warmup_loop(loop_fn, model, input_ids, n_steps=2):
     torch.cuda.synchronize()
 
 
-def _time_version(label, loop_fn, dtype, compile_model=False):
+def _run_version(
+    label: str,
+    loop_fn,
+    trace_name: str,
+    dtype=torch.float32,
+    compile_model: bool = False,
+) -> float:
+    """Profile (Chrome trace) then time a version for grading."""
     model = build_model(dtype)
     input_ids = get_input_ids()
     if compile_model:
         model = _compile_for_generation(model)
         _warmup_loop(loop_fn, model, input_ids)
+    profile(loop_fn, model, input_ids, trace_name)
     elapsed = time_generation(loop_fn, model, input_ids, label)
     del model
     torch.cuda.empty_cache()
     return elapsed
 
 
-def generate_v0(trace_name: str | None = "v0_trace.json") -> float:
-    model = build_model(torch.float32)
-    input_ids = get_input_ids()
-    if trace_name:
-        profile(v0_loop, model, input_ids, trace_name)
-    elapsed = time_generation(v0_loop, model, input_ids, "V0")
-    del model
-    torch.cuda.empty_cache()
-    return elapsed
+def generate_v0() -> float:
+    return _run_version("V0", v0_loop, "v0_trace.json")
 
 
-def generate_v1(trace_name: str | None = None) -> float:
-    model = build_model(torch.float32)
-    input_ids = get_input_ids()
-    if trace_name:
-        profile(v1_loop, model, input_ids, trace_name)
-    elapsed = time_generation(v1_loop, model, input_ids, "V1 (+KV cache)")
-    del model
-    torch.cuda.empty_cache()
-    return elapsed
+def generate_v1() -> float:
+    return _run_version("V1 (+KV cache)", v1_loop, "v1_trace.json")
 
 
-def generate_v2(trace_name: str | None = None) -> float:
-    return _time_version("V2 (+no .item())", v2_loop, torch.float32)
+def generate_v2() -> float:
+    return _run_version("V2 (+no .item())", v2_loop, "v2_trace.json")
 
 
-def generate_v3(trace_name: str | None = "v3_trace.json") -> float:
-    model = build_model(torch.bfloat16)
-    model = _compile_for_generation(model)
-    input_ids = get_input_ids()
-    _warmup_loop(v3_loop, model, input_ids)
-    if trace_name:
-        profile(v3_loop, model, input_ids, trace_name)
-    elapsed = time_generation(v3_loop, model, input_ids, "V3 (+compile)")
-    del model
-    torch.cuda.empty_cache()
-    return elapsed
+def generate_v3() -> float:
+    return _run_version(
+        "V3 (+compile)",
+        v3_loop,
+        "v3_trace.json",
+        dtype=torch.bfloat16,
+        compile_model=True,
+    )
 
 
-def generate_optimized(optimized_trace_name: str = "v3_trace.json") -> float:
+def generate_optimized() -> float:
     """Final optimized path (V3) for grading speedup vs slow baseline."""
-    return generate_v3(optimized_trace_name)
+    return generate_v3()
 
 
 # Aliases for homework / imports
@@ -233,23 +224,31 @@ def main():
     print("\n--- Part 1: Slow baseline ---")
     model = build_model(torch.float32)
     input_ids = get_input_ids()
-    profile(slow_loop, model, input_ids, "v0_slow_trace.json")
+    profile(slow_loop, model, input_ids, "slow_trace.json")
     slow_elapsed = time_generation(slow_loop, model, input_ids, "Slow")
     del model
     torch.cuda.empty_cache()
 
-    print("\n--- Part 2: Progressive versions (timing only) ---")
+    print("\n--- Part 2: Progressive versions (profile + timing) ---")
     timings = {
-        "V0": generate_v0(trace_name=None),
+        "V0": generate_v0(),
         "V1": generate_v1(),
         "V2": generate_v2(),
+        "V3": generate_v3(),
     }
-
-    print("\n--- Part 3: V3 (+compile) timing and Chrome trace ---")
-    optimized_elapsed = generate_v3(trace_name="v3_trace.json")
-    timings["V3"] = optimized_elapsed
+    optimized_elapsed = timings["V3"]
 
     _print_progressive_summary(slow_elapsed, timings)
+
+    print("\nChrome traces saved to results/ (open at https://ui.perfetto.dev):")
+    for trace in (
+        "slow_trace.json",
+        "v0_trace.json",
+        "v1_trace.json",
+        "v2_trace.json",
+        "v3_trace.json",
+    ):
+        print(f"  {RESULTS_DIR / trace}")
 
     print("\n" + "=" * 60)
     print("SUMMARY (grading)")
