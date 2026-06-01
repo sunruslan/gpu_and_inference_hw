@@ -62,9 +62,6 @@ def v2_loop(model, input_ids, n_steps):
     cur = input_ids
     out = torch.empty(n_steps, device=input_ids.device, dtype=torch.long)
     for i in range(n_steps):
-        # Required when model is torch.compile'd with CUDA graphs + KV cache:
-        # each decode step reuses past_key_values without overwriting the graph.
-        torch.compiler.cudagraph_mark_step_begin()
         outputs = model(
             input_ids=cur,
             past_key_values=past_key_values,
@@ -109,6 +106,27 @@ def profile(loop_fn, model, input_ids, trace_name: str):
 # ---------------------------------------------------------------------------
 
 
+def _compile_for_generation(model):
+    """torch.compile for decode loops with KV cache.
+
+    `mode='reduce-overhead'` enables CUDA graph trees that reuse static tensor
+    addresses; HuggingFace past_key_values are updated in-place each step, which
+    triggers 'CUDAGraph output overwritten' errors. Compile without CUDA graphs.
+    """
+    import torch._inductor.config as inductor_config
+
+    inductor_config.triton.cudagraph_trees = False
+    try:
+        return torch.compile(
+            model,
+            mode="reduce-overhead",
+            fullgraph=False,
+            options={"triton.cudagraphs": False},
+        )
+    except TypeError:
+        return torch.compile(model, mode="reduce-overhead", fullgraph=False)
+
+
 def _warmup_loop(loop_fn, model, input_ids, n_steps=2):
     loop_fn(model, input_ids, n_steps)
     torch.cuda.synchronize()
@@ -118,7 +136,7 @@ def _time_version(label, loop_fn, dtype, compile_model=False):
     model = build_model(dtype)
     input_ids = get_input_ids()
     if compile_model:
-        model = torch.compile(model, mode="reduce-overhead")
+        model = _compile_for_generation(model)
         _warmup_loop(loop_fn, model, input_ids)
     elapsed = time_generation(loop_fn, model, input_ids, label)
     del model
@@ -158,7 +176,7 @@ def generate_v3(trace_name: str | None = None) -> float:
 
 def generate_v4(trace_name: str | None = "v4_trace.json") -> float:
     model = build_model(torch.bfloat16)
-    model = torch.compile(model, mode="reduce-overhead")
+    model = _compile_for_generation(model)
     input_ids = get_input_ids()
     _warmup_loop(v4_loop, model, input_ids)
     if trace_name:
