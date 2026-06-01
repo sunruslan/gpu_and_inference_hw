@@ -74,9 +74,8 @@ def v2_loop(model, input_ids, n_steps):
     return out.cpu().tolist()
 
 
-# V3/V4 use the same loop; model dtype / compile differ in generate_*.
+# V3 uses the same loop as V2; torch.compile is applied in generate_v3.
 v3_loop = v2_loop
-v4_loop = v2_loop
 
 
 # ---------------------------------------------------------------------------
@@ -167,30 +166,26 @@ def generate_v2(trace_name: str | None = None) -> float:
     return _time_version("V2 (+no .item())", v2_loop, torch.float32)
 
 
-def generate_v3(trace_name: str | None = None) -> float:
-    return _time_version("V3 (+bf16)", v3_loop, torch.bfloat16)
-
-
-def generate_v4(trace_name: str | None = "v4_trace.json") -> float:
+def generate_v3(trace_name: str | None = "v3_trace.json") -> float:
     model = build_model(torch.bfloat16)
     model = _compile_for_generation(model)
     input_ids = get_input_ids()
-    _warmup_loop(v4_loop, model, input_ids)
+    _warmup_loop(v3_loop, model, input_ids)
     if trace_name:
-        profile(v4_loop, model, input_ids, trace_name)
-    elapsed = time_generation(v4_loop, model, input_ids, "V4 (+compile)")
+        profile(v3_loop, model, input_ids, trace_name)
+    elapsed = time_generation(v3_loop, model, input_ids, "V3 (+compile)")
     del model
     torch.cuda.empty_cache()
     return elapsed
 
 
-def generate_optimized(optimized_trace_name: str = "v4_trace.json") -> float:
-    """Final optimized path (V4) for grading speedup vs slow baseline."""
-    return generate_v4(optimized_trace_name)
+def generate_optimized(optimized_trace_name: str = "v3_trace.json") -> float:
+    """Final optimized path (V3) for grading speedup vs slow baseline."""
+    return generate_v3(optimized_trace_name)
 
 
 # Aliases for homework / imports
-optimized_loop = v4_loop
+optimized_loop = v3_loop
 
 
 # ---------------------------------------------------------------------------
@@ -210,8 +205,7 @@ def _print_progressive_summary(slow_elapsed: float, timings: dict[str, float]):
         ("V0 (same loop as slow)", timings["V0"]),
         ("V1 (+KV cache)", timings["V1"]),
         ("V2 (+no .item())", timings["V2"]),
-        ("V3 (+bf16)", timings["V3"]),
-        ("V4 (+torch.compile)", timings["V4"]),
+        ("V3 (+torch.compile)", timings["V3"]),
     ]
 
     prev_elapsed = None
@@ -224,10 +218,10 @@ def _print_progressive_summary(slow_elapsed: float, timings: dict[str, float]):
         print(f"{label:<28} {elapsed:10.2f} {vs_slow:9.2f}x {vs_prev:>10}")
         prev_elapsed = elapsed
 
-    v4 = timings["V4"]
+    v3 = timings["V3"]
     print("-" * 60)
-    if v4 > 0:
-        print(f"  Total speedup (Slow → V4): {slow_elapsed / v4:.2f}x")
+    if v3 > 0:
+        print(f"  Total speedup (Slow → V3): {slow_elapsed / v3:.2f}x")
 
 
 def main():
@@ -249,12 +243,11 @@ def main():
         "V0": generate_v0(trace_name=None),
         "V1": generate_v1(),
         "V2": generate_v2(),
-        "V3": generate_v3(),
     }
 
-    print("\n--- Part 3: V4 (+compile) timing and Chrome trace ---")
-    optimized_elapsed = generate_v4(trace_name="v4_trace.json")
-    timings["V4"] = optimized_elapsed
+    print("\n--- Part 3: V3 (+compile) timing and Chrome trace ---")
+    optimized_elapsed = generate_v3(trace_name="v3_trace.json")
+    timings["V3"] = optimized_elapsed
 
     _print_progressive_summary(slow_elapsed, timings)
 
@@ -284,8 +277,7 @@ if __name__ == "__main__":
 # Changes made and speedup per fix:
 #   V1 (+KV cache): ...
 #   V2 (+no .item()): ...
-#   V3 (+bf16): ...
-#   V4 (+torch.compile): ...
+#   V3 (+torch.compile, bf16): ...
 #
 # Biggest impact and why:
 #
