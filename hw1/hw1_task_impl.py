@@ -1,5 +1,5 @@
 import torch
-
+import numpy as np
 
 # ============================================================================
 # Part 1: Implement PyTorch Functions
@@ -13,7 +13,7 @@ import torch
 def lowest_ai_fn(x: torch.Tensor) -> torch.Tensor:
     """Lowest arithmetic intensity baseline (0 FLOP/Byte)."""
     # TODO (1 line): implement a lowest-AI op
-    pass
+    return torch.clone(x)
 
 
 # TASK 1b: Implement a function with configurable arithmetic intensity.
@@ -37,10 +37,13 @@ def make_compute_fn(num_ops: int, compiled: bool = True):
     """Return an eager or compiled function whose work scales with num_ops."""
 
     def fn(x: torch.Tensor) -> torch.Tensor:
-        pass
+        acc = torch.zeros_like(x)
+        for _ in range(num_ops):
+            acc = acc * x + x
+        return acc
 
     # TODO (1 line): return either `fn` or `torch.compile(fn)` based on `compiled`
-    pass
+    return torch.compile(fn) if compiled else fn
 
 
 # ============================================================================
@@ -63,7 +66,16 @@ def benchmark_fn(fn, *args, warmup=25, rep=100) -> float:
     torch.cuda.synchronize()
 
     # TODO: time `rep` runs using CUDA events and return median latency (ms)
-    pass
+    times = []
+    for _ in range(rep):
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        start.record()
+        fn(*args)
+        end.record()
+        torch.cuda.synchronize()
+        times.append(start.elapsed_time(end))
+    return np.median(times)
 
 
 # TASK 3: Compute element-wise operation metrics from measured runtime.
@@ -83,8 +95,23 @@ def benchmark_fn(fn, *args, warmup=25, rep=100) -> float:
 
 
 def compute_elementwise_metrics(num_elements, num_ops, bytes_per_element, ms, variant):
-    # TODO: compute total FLOPs, arithmetic intensity, and achieved FLOP/s
-    pass
+    # Each `acc = acc * x + x` iteration: one multiply + one add = 2 FLOPs/element.
+    flops_per_element = 2 * num_ops
+    total_flops = num_elements * flops_per_element
+
+    if variant == "compiled":
+        # Fused kernel: one read of x and one write of the result at the boundary.
+        total_bytes = num_elements * 2 * bytes_per_element
+    elif variant == "eager":
+        # Separate mul/add kernels per iteration; each touches 3 tensors (2 reads + 1 write).
+        bytes_per_iter = 6 * num_elements * bytes_per_element
+        init_write = num_elements * bytes_per_element  # acc = zeros_like(x)
+        total_bytes = init_write + num_ops * bytes_per_iter
+    else:
+        raise ValueError(f"Unknown variant: {variant}")
+
+    ai = total_flops / total_bytes
+    achieved_flops = total_flops / (ms * 1e-3)
     return total_flops, ai, achieved_flops
 
 
