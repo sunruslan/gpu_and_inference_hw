@@ -1,4 +1,8 @@
 import torch
+
+# Enable TF32 matmul on Ampere+ GPUs (silences transformers warning for fp32 paths).
+torch.set_float32_matmul_precision("high")
+
 from utils import (
     build_model,
     get_input_ids,
@@ -58,6 +62,9 @@ def v2_loop(model, input_ids, n_steps):
     cur = input_ids
     out = torch.empty(n_steps, device=input_ids.device, dtype=torch.long)
     for i in range(n_steps):
+        # Required when model is torch.compile'd with CUDA graphs + KV cache:
+        # each decode step reuses past_key_values without overwriting the graph.
+        torch.compiler.cudagraph_mark_step_begin()
         outputs = model(
             input_ids=cur,
             past_key_values=past_key_values,
